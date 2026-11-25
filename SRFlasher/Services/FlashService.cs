@@ -101,6 +101,15 @@ namespace SRFlasher.Services
         /// instead of failing the run. Reset per flash by the view model.</summary>
         public bool AllowBelowMinBattery { get; set; }
 
+        /// <summary>
+        /// Hard-brick guard: anti-rollback consent. When set, FlashService
+        /// asks (via this callback) before flashing on a device with an
+        /// ACTIVE anti version — downgrading past it is irreversible. The
+        /// VM wires a dialog here; without a handler the flash is REFUSED
+        /// (fail-closed) instead of only logging a warning.
+        /// </summary>
+        public Func<int, System.Threading.Tasks.Task<bool>> AntiRollbackConsentRequest { get; set; }
+
         private static readonly string[] PayloadExtractablePartitions =
         {
             "boot", "vendor_boot", "init_boot", "dtbo", "recovery",
@@ -1211,18 +1220,36 @@ namespace SRFlasher.Services
 
                 ReportProgress(13, "Anti-rollback check", null, "Checking anti-rollback version...");
                 var anti = await QueryAntiRollbackAsync(serial, token);
-                if (anti.HasValue)
+                if (anti.HasValue && anti.Value > 0)
                 {
                     Log($"[Anti-rollback] Device anti version: {anti.Value}");
-                    if (anti.Value > 0)
+                    Log($"[WARNING] Anti-rollback is ACTIVE ({anti.Value}). Flashing firmware older " +
+                        "than this version may PERMANENTLY BRICK the device — this cannot be undone.");
+
+                    var consentHandler = AntiRollbackConsentRequest;
+                    if (consentHandler != null)
                     {
-                        Log($"[WARNING] Anti-rollback is ACTIVE ({anti.Value}). Flashing firmware older " +
-                            "than this version may PERMANENTLY BRICK the device — this cannot be undone.");
+                        var consent = await consentHandler(anti.Value).ConfigureAwait(false);
+                        if (!consent)
+                        {
+                            Log("[Anti-rollback] Flash cancelled by the user at the anti-rollback warning.");
+                            return FlashResult.Fail(
+                                "Flash cancelled at the anti-rollback warning.",
+                                "The device's anti-rollback version is " + anti.Value + ". Flashing older firmware than this " +
+                                "would permanently brick the device. Nothing was written.");
+                        }
+                        Log("[Anti-rollback] User accepted the risk — continuing.");
                     }
-                }
-                else
-                {
-                    Log("[Anti-rollback] Device does not expose an anti version (non-Xiaomi or unsupported).");
+                    else
+                    {
+                        // Fail-closed: no consent dialog available (background run)
+                        // → refuse rather than only warn in a log nobody may read.
+                        Log("[Anti-rollback] No consent handler attached — flash refused (fail-safe).");
+                        return FlashResult.Fail(
+                            "Anti-rollback is active on this device.",
+                            "Flashing firmware older than the anti version permanently bricks the device. " +
+                            "Run the flash from the main app window so the warning can be confirmed.");
+                    }
                 }
 
                 // Optional pre-flash wipe (clean install): erase userdata + cache

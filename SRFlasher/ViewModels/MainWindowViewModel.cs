@@ -2978,6 +2978,80 @@ namespace SRFlasher.ViewModels
         /// FlashService so its pre-flight logs a warning instead of failing.
         /// Returns false when the user chooses to charge first (abort flash).
         /// </summary>
+        /// <summary>
+        /// Hard-brick guard: anti-rollback consent. Runs on the flash pipeline
+        /// thread, marshals the dialog to the UI thread. Fail-closed — any
+        /// error showing the dialog counts as "no".
+        /// </summary>
+        private System.Threading.Tasks.Task<bool> RequestAntiRollbackConsentAsync(int antiVersion)
+        {
+            var app = System.Windows.Application.Current;
+            if (app == null)
+            {
+                Log("[Anti-rollback] No UI available — refusing to continue (fail-safe).");
+                return System.Threading.Tasks.Task.FromResult(false);
+            }
+
+            var tcs = new System.Threading.Tasks.TaskCompletionSource<bool>();
+            app.Dispatcher.InvokeAsync(() =>
+            {
+                try
+                {
+                    var ok = Dialogs.ConfirmDialog.Show(
+                        app.MainWindow,
+                        "ANTI-ROLLBACK IS ACTIVE",
+                        "This device's anti-rollback version is " + antiVersion + ".\n\n" +
+                        "Flashing firmware built for an OLDER anti version will PERMANENTLY BRICK the device — " +
+                        "the bootloader will refuse it and there is no recovery route. This cannot be undone.\n\n" +
+                        "Most custom ROMs are fine — the danger is older official firmware or an old ROM release.\n\n" +
+                        "Flash anyway?",
+                        "FLASH ANYWAY", "CANCEL — SAFER", danger: true);
+                    tcs.SetResult(ok);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Debug("Anti-rollback consent dialog failed: {Message}", ex.Message);
+                    tcs.SetResult(false);
+                }
+            });
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Hard-brick guard: flashing the boot chain to BOTH slots removes the
+        /// device's fallback slot — a bad boot image written to both leaves no
+        /// bootable slot. Warn and require consent when the user picked BOTH
+        /// while boot-chain partitions are selected.
+        /// </summary>
+        public bool ConfirmBothSlotBootChainBeforeFlash()
+        {
+            if (!string.Equals(SlotChoice, "Both", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            var bootChain = GetFlashPartitions()
+                .Where(p => p == "boot" || p == "init_boot" || p == "vendor_boot" || p == "dtbo")
+                .ToList();
+            if (bootChain.Count == 0) return true;
+
+            var ok = Dialogs.ConfirmDialog.Show(
+                System.Windows.Application.Current?.MainWindow,
+                "BOTH SLOTS SELECTED",
+                "This flash writes " + string.Join(", ", bootChain) + " to BOTH slots (A and B).\n\n" +
+                "A/B devices keep a fallback slot — if one slot's boot chain is bad, the phone boots from the other. " +
+                "Writing this boot chain to both slots removes that fallback: if the image is wrong for this device, " +
+                "neither slot will boot and only an authorized EDL flasher can recover it.\n\n" +
+                "Is the image verified for THIS device?",
+                "FLASH BOTH SLOTS", "ACTIVE SLOT ONLY", danger: true);
+            if (!ok)
+            {
+                SlotChoice = "Auto";
+                Log("[Slot] Switched to the active slot after the both-slot boot-chain warning.");
+                return true; // continue — with the safer slot choice
+            }
+            Log($"[Slot] User accepted writing {string.Join(", ", bootChain)} to BOTH slots.");
+            return true;
+        }
+
         public bool ConfirmLowBatteryBeforeFlash()
         {
             _flashService.AllowBelowMinBattery = false;   // every run re-prompts
@@ -3031,6 +3105,9 @@ namespace SRFlasher.ViewModels
             _errorTranslator = new ErrorTranslator();
             _flashService = new FlashService();
             _flashService.MinBatteryLevel = _batteryThreshold;
+            // Hard-brick guard: when the device has an ACTIVE anti-rollback
+            // version, the flash service asks via this dialog before writing.
+            _flashService.AntiRollbackConsentRequest = RequestAntiRollbackConsentAsync;
             _deviceDetailsService = new DeviceDetailsService(_processManager);
 
             InitStepTrail();

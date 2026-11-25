@@ -12,6 +12,14 @@ project adheres to [Semantic Versioning](https://semver.org/) from v1.0 onward.
   with a direct link to the releases page. Manual CHECK NOW always goes
   online; automatic checks stay silent when offline. No device data is sent.
 
+### Hardening
+- Anti-rollback consent: when the device reports an ACTIVE anti version,
+  flashing now asks with a danger dialog before writing anything (was:
+  log-only). Background runs without a UI are refused (fail-closed).
+- Both-slot boot-chain guard: flashing boot/init_boot/vendor_boot/dtbo to
+  BOTH slots warns that the fallback slot is being removed and offers the
+  safer active-slot switch.
+
 ## [1.0.0] — 2026-11
 
 First public release.

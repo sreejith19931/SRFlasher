@@ -807,6 +807,11 @@ namespace SRFlasher
             if (!_viewModel.ConfirmLowBatteryBeforeFlash())
                 return;
 
+            // Hard-brick guard: writing the boot chain to BOTH slots removes
+            // the device's fallback slot. Warn once, offer the safer switch.
+            if (!_viewModel.ConfirmBothSlotBootChainBeforeFlash())
+                return;
+
             // Payload ROM: the primary action is the two-stage install — stage 1
             // flashes the boot chain over fastboot and reboots to recovery,
             // stage 2 sideloads the same package for the full install.
