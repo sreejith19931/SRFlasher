@@ -113,12 +113,17 @@ namespace SRFlasher
                 Dispatcher.BeginInvoke(new Action(async () => await CloseToastWithAnimationAsync(item)));
             };
 
-            // 4.1: the DEVICE dashboard populates the moment the tab is opened
-            // — an empty card on first open read as a broken page. The manual
-            // REFRESH DETAILS button still forces a full re-read.
-            TabDevice.IsVisibleChanged += async (s, e) =>
+            // 4.1: the DEVICE dashboard populates the moment the tab is
+            // opened — an empty card on first open read as a broken page. The
+            // manual REFRESH DETAILS button still forces a full re-read.
+            // NOTE: TabItem.IsVisible is true as soon as the header strip is
+            // rendered (i.e. at startup), so it must NOT be used as the
+            // trigger — the dashboard would populate once with the
+            // disconnected defaults and never again. SelectionChanged is the
+            // real "user opened this tab" signal.
+            MainTabs.SelectionChanged += async (s, e) =>
             {
-                if ((bool)e.NewValue && !_viewModel.IsFlashing)
+                if (MainTabs.SelectedItem == TabDevice && !_viewModel.IsFlashing)
                     await _viewModel.RefreshDeviceDashboardAsync();
             };
 

@@ -163,6 +163,11 @@ namespace SRFlasher.ViewModels
                     OnPropertyChanged(nameof(WelcomeVisibility));
                     OnPropertyChanged(nameof(WelcomeNoDeviceVisibility));
                     OnPropertyChanged(nameof(WelcomeDeviceVisibility));
+                    // The DEVICE dashboard's refresh button gates on this —
+                    // without these, its tooltip/reason and enabled state go
+                    // stale after connect/disconnect.
+                    OnPropertyChanged(nameof(DeviceDashboardRefreshEnabled));
+                    OnPropertyChanged(nameof(DeviceDashboardRefreshReason));
                 }
             }
         }
