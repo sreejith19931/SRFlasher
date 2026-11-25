@@ -105,7 +105,17 @@ Backups taken before risky operations (e.g. recovery-partition repair) are kept 
 
 ## Screenshots
 
-*(coming soon)*
+<p align="center">
+  <img width="100%" alt="ROM tab — the plan, drop zone and step trail" src="docs/screenshots/rom-tab.png">
+</p>
+<p align="center">
+  <img width="49%" alt="Additional files — sideload extras and rescue reboots" src="docs/screenshots/additional-tab.png">
+  <img width="49%" alt="Device dashboard and rescue tools" src="docs/screenshots/device-tab.png">
+</p>
+<p align="center">
+  <img width="49%" alt="Full command log with level filters" src="docs/screenshots/logs-tab.png">
+  <img width="49%" alt="Settings — themes, battery gate, expert mode" src="docs/screenshots/settings-tab.png">
+</p>
 
 ## License
 
