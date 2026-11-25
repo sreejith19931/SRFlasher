@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S5 · Narrow window — stacked POST-FLASH</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+.frame { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--bg); }
+.mini { display: flex; }
+.mini .side { width: 40px; border-right: 1px solid var(--line); background: var(--panel); }
+.mini .main { flex: 1; padding: 10px; }
+.tabs { display: flex; gap: 12px; border-bottom: 1px solid var(--line); margin-bottom: 10px;
+        font-size: 9px; font-weight: 700; color: var(--text-faint); }
+.tabs .on { color: var(--red-2); border-bottom: 2px solid var(--red); padding-bottom: 4px; }
+.two { display: flex; gap: 8px; }
+.two > .panel { flex: 1; min-width: 0; }
+.stack { display: flex; flex-direction: column; gap: 8px; }
+.ghost-line { height: 7px; border-radius: 4px; background: var(--panel-2); margin-bottom: 6px; }
+.ghost-line.s { width: 62%; }
+.ghost-line.m { width: 82%; }
+.pinch { outline: 1px dashed rgba(224,36,74,.55); outline-offset: 2px; }
+.warnbox { border-left: 3px solid var(--red); background: rgba(224,36,74,.07);
+           padding: 8px 11px; border-radius: 6px; font-size: 10px; color: var(--text-dim); }
+.warnbox b { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>S5 · Narrow window — stacked POST-FLASH</h1>
+<p>The window declares <code>MinWidth 940</code>, but the POST-FLASH tab still asks for a left column
+of <code>1.3*</code> plus a right column with <code>MinWidth 300</code> and 16 px of gap and 64 px of
+margins. At the minimum the right column is squeezed to its floor and the queue/reads start clipping.</p>
+
+<h2>Today at 940 px</h2>
+<div class="win">
+  <div class="titlebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="t">Window at its own minimum width</span></div>
+  <div class="body">
+    <span class="lbl cur">TODAY</span>
+    <div class="frame" style="margin-top:8px; width:420px">
+      <div class="mini">
+        <div class="side"></div>
+        <div class="main">
+          <div class="tabs"><span>ROM</span><span class="on">POST-FLASH</span><span>LOGS</span></div>
+          <div class="two pinch">
+            <div class="panel">
+              <div class="ghost-line m"></div><div class="ghost-line s"></div><div class="ghost-line m"></div>
+            </div>
+            <div class="panel">
+              <div class="ghost-line m"></div><div class="ghost-line s"></div><div class="ghost-line s"></div>
+            </div>
+          </div>
+          <div class="warnbox" style="margin-top:8px"><b>Pinched:</b> the right column hits its 300 px floor,
+            so recovery rows and the queue's second line (partitions · elapsed) start truncating.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Proposed — one breakpoint</h2>
+<div class="win">
+  <div class="titlebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="t">Below 1000 px the grid becomes a single column</span></div>
+  <div class="body">
+    <span class="lbl new">PROPOSED</span>
+    <div class="frame" style="margin-top:8px; width:420px">
+      <div class="mini">
+        <div class="side"></div>
+        <div class="main">
+          <div class="tabs"><span>ROM</span><span class="on">POST-FLASH</span><span>LOGS</span></div>
+          <div class="stack">
+            <div class="panel">
+              <div class="ghost-line m"></div><div class="ghost-line s"></div><div class="ghost-line m"></div>
+            </div>
+            <div class="panel">
+              <div class="ghost-line m"></div><div class="ghost-line s"></div><div class="ghost-line s"></div>
+            </div>
+          </div>
+          <div class="warnbox" style="margin-top:8px; border-left-color:var(--green); background:rgba(0,184,148,.07)">
+            <b>Single column:</b> panels keep full width, the page scrolls, nothing truncates.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="capnote"><b>Implementation:</b> a <code>SizeChanged</code> handler on the tab grid swaps
+    <code>ColumnDefinitions</code> (2 × <code>*</code> → 1 × <code>*</code>), moves the right panel to the
+    next row and sets its <code>Margin</code>. About 30 lines in the code-behind, no template changes.</div>
+</div>
+
+<h2>The threshold, measured</h2>
+<div class="win"><div class="body">
+  <table style="width:100%; border-collapse:collapse; font-size:11.5px">
+    <tr><td style="padding:6px 8px; border-bottom:1px solid var(--line); width:34%"><b>Sidebar expanded</b></td>
+        <td style="padding:6px 8px; border-bottom:1px solid var(--line); color:var(--text-dim)">260 px — content width = window − 260 − 64 (margins) − 16 (gap)</td></tr>
+    <tr><td style="padding:6px 8px; border-bottom:1px solid var(--line)"><b>Sidebar collapsed</b></td>
+        <td style="padding:6px 8px; border-bottom:1px solid var(--line); color:var(--text-dim)">52 px — stack below ~1000, two columns are safe above ~1100</td></tr>
+    <tr><td style="padding:6px 8px"><b>Recommended breakpoint</b></td>
+        <td style="padding:6px 8px; color:var(--text-dim)">stack when the content area is under <b>720 px</b> (i.e. window under ~1040 expanded, ~830 collapsed)</td></tr>
+  </table>
+</div></div>
+
+</div>
+</body>
+</html>

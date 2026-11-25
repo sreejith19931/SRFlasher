@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SRFlasher/SRFlasher.csproj" Id="e3cc207d-17f2-4133-aae5-3b73f7fd8b46" />
+  <Project Path="SRFlasher.Tests/SRFlasher.Tests.csproj" Id="a1b2c3d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d" />
+</Solution>

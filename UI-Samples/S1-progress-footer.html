@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S1 · Flash footer — phases instead of fake percent</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+/* page-specific: the footer itself */
+.footer { border: 1px solid var(--line); border-radius: 8px;
+          background: var(--panel); padding: 14px 18px; }
+.f-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.f-status { font-size: 11.5px; font-weight: 600; }
+.f-meta { font-size: 10.5px; color: var(--text-dim); }
+.bar { height: 11px; border-radius: 6px; background: var(--bg);
+       border: 1px solid var(--line); overflow: hidden; }
+.fill-flat { width: 18%; height: 100%; background: #3a4150; }
+.fill-live { width: 38%; height: 100%; border-radius: 6px;
+             background: linear-gradient(90deg, #E0244A, #C41E3F); }
+.fill-indet { width: 100%; height: 100%;
+  background: repeating-linear-gradient(90deg, #232835 0 14px, #2d3442 14px 28px); }
+
+.phases { display: flex; gap: 5px; margin: 9px 0; }
+.ph { flex: 1; text-align: center; font-size: 8.5px; font-weight: 700;
+      letter-spacing: .06em; padding: 6px 0; border-radius: 5px;
+      background: var(--panel-2); color: var(--text-faint); border: 1px solid transparent; }
+.ph.done { background: rgba(0,184,148,.16); color: var(--green-2); border-color: rgba(0,184,148,.35); }
+.ph.on { background: var(--red); color: #fff; box-shadow: 0 0 12px rgba(224,36,74,.5); }
+.stepnote { font-size: 9.5px; color: var(--text-faint); margin-top: 7px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>S1 · Flash footer — phases instead of fake percent</h1>
+<p>The footer becomes the single flash UI. Extraction and reboot waits run as indeterminate
+motion inside their own phase, so the bar never freezes at a number that means nothing.</p>
+
+<h2>Current behaviour</h2>
+<div class="win">
+  <div class="titlebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="t">SR Flasher — during a payload-ROM flash</span></div>
+  <div class="body">
+    <span class="lbl cur">TODAY</span>
+    <p style="margin:8px 0 10px">Extracting a 4.6 GB payload takes 1–10 minutes. The bar sits exactly
+      where the last step left it. Stuck or working? Nobody can tell.</p>
+    <div class="footer">
+      <div class="f-row"><span class="f-status">Preparing flash images…</span>
+        <span class="f-meta">18% · Elapsed 03:12</span></div>
+      <div class="bar"><div class="fill-flat"></div></div>
+    </div>
+    <p style="margin-top:10px; font-size:10.5px">Meanwhile a modal overlay blocks the window with
+      Abort / Close — and “Close” reads like it cancels the flash.</p>
+  </div>
+</div>
+
+<h2>Proposed</h2>
+<div class="win">
+  <div class="titlebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="t">SR Flasher</span></div>
+  <div class="body">
+    <span class="lbl new">PROPOSED</span>
+    <div class="footer" style="margin-top:8px">
+      <div class="f-row">
+        <span class="f-status">Flashing boot (A) — image 2 of 9</span>
+        <span class="f-meta">01:42 elapsed · serial 304018ed</span>
+      </div>
+      <div class="phases">
+        <div class="ph done">✓ CHECKS</div>
+        <div class="ph on">WRITE&nbsp;2/9</div>
+        <div class="ph">VERIFY</div>
+        <div class="ph">REBOOT</div>
+      </div>
+      <div class="bar"><div class="fill-live"></div></div>
+      <div class="stepnote">CHECKS = mode · lock · anti-rollback · battery &nbsp;→&nbsp;
+        WRITE = partition × slot loop &nbsp;→&nbsp; VERIFY = device re-detection &nbsp;→&nbsp;
+        REBOOT = to the chosen target</div>
+    </div>
+
+    <div class="divider"></div>
+    <p>During extraction or a reboot wait the active phase runs indeterminate — motion, not a lie:</p>
+    <div class="footer">
+      <div class="f-row"><span class="f-status">Extracting payload — this can take several minutes</span>
+        <span class="f-meta">04:55 elapsed</span></div>
+      <div class="phases">
+        <div class="ph done">✓ CHECKS</div>
+        <div class="ph on">WRITE — PREPARING</div>
+        <div class="ph">VERIFY</div>
+        <div class="ph">REBOOT</div>
+      </div>
+      <div class="bar"><div class="fill-indet"></div></div>
+    </div>
+  </div>
+  <div class="capnote"><b>Removed:</b> the modal overlay no longer appears during flashes — it stays
+    for short operations (reboots, wipes) where blocking is correct. Abort moves into the footer.</div>
+</div>
+
+</div>
+</body>
+</html>

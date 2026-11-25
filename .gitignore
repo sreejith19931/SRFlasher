@@ -1,0 +1,30 @@
+# ================= Build output =================
+[Bb]in/
+[Oo]bj/
+publish/
+Dist/
+StagingOut/
+
+# ================= Visual Studio =================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# ================= NuGet =================
+# Old-style packages folder: restored by NuGet, never committed.
+packages/
+
+# ================= Workspace noise =================
+.freebuff/
+.cloud-attachments/
+
+# ================= Logs & temp =================
+*.log
+logs/
+
+# ================= OS =================
+Thumbs.db
+Desktop.ini

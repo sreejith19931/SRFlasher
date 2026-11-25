@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="S/R monogram mark">
+  <title>S/R monogram — final mark</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2e3238"/>
+      <stop offset="1" stop-color="#16181b"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#565d66" stop-opacity="0.9"/>
+      <stop offset="0.5" stop-color="#3a3f45" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#141517" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="sg" gradientUnits="userSpaceOnUse" x1="0" y1="110" x2="0" y2="400">
+      <stop offset="0" stop-color="#ff4d63"/>
+      <stop offset="0.55" stop-color="#dc143c"/>
+      <stop offset="1" stop-color="#a50e2e"/>
+    </linearGradient>
+    <radialGradient id="halo" gradientUnits="userSpaceOnUse" cx="256" cy="250" r="210">
+      <stop offset="0" stop-color="#dc143c" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#dc143c" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="code" width="40" height="40" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.10">
+        <path d="M14 15 L8 20 L14 25"/>
+        <path d="M23 12 L18 28"/>
+        <path d="M26 15 L32 20 L26 25"/>
+      </g>
+    </pattern>
+    <filter id="wg" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+  </defs>
+  <rect x="16" y="16" width="480" height="480" rx="104" fill="url(#bg)"/>
+  <rect x="16" y="16" width="480" height="480" rx="104" fill="url(#code)"/>
+  <rect x="16" y="16" width="480" height="480" rx="104" fill="url(#halo)"/>
+  <rect x="16" y="16" width="480" height="480" rx="104" fill="none" stroke="url(#edge)" stroke-width="4"/>
+  <!-- glyph scaled 1.22 about its own centre (259, 256.5) so the badge hugs the SR:
+       ~33 px side padding, ~74 px top/bottom on the 480 px badge -->
+  <g transform="translate(256 256) scale(1.22) translate(-259 -256.5)">
+  <g transform="translate(-77 0)" fill="none" stroke-width="40" stroke-linecap="butt" stroke-linejoin="miter">
+    <g stroke="#f2f3f6" opacity="0.35" filter="url(#wg)">
+      <path d="M240 150 L196 204 L240 258"/><path d="M410 150 L360 366"/>
+      <path d="M410 150 L476 224 L378 297"/>
+    </g>
+    <g stroke="url(#sg)">
+      <path d="M364 300 L456 366"/>
+    </g>
+    <g stroke="#f2f3f6">
+      <path d="M240 150 L196 204 L240 258"/>
+      <path d="M410 150 L360 366"/>
+      <path d="M410 150 L476 224 L378 297"/>
+    </g>
+    <g stroke="url(#sg)">
+      <path d="M330 150 H218"/>
+      <path d="M218 258 H290 L334 312 L290 366 H196"/>
+    </g>
+  </g>
+  </g>
+</svg>

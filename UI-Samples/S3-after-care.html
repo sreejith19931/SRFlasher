@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S3 · POST-FLASH in Simple mode — "AFTER CARE"</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+.row { display: flex; gap: 12px; }
+.col { display: flex; flex-direction: column; gap: 7px; }
+.boot { background: rgba(0,184,148,.07); border: 1px solid rgba(0,184,148,.4);
+        border-radius: 8px; padding: 13px 14px; margin-bottom: 12px; }
+.boot .t { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+.boot .d { font-size: 10px; color: var(--text-dim); }
+.more { border: 1px dashed var(--line); border-radius: 8px; padding: 9px 12px;
+        font-size: 10.5px; color: var(--text-dim); display: flex;
+        justify-content: space-between; align-items: center; margin-top: 12px; }
+.more b { color: var(--text); font-weight: 600; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+       font-size: 9px; font-weight: 700; }
+.seg span { padding: 5px 11px; color: var(--text-faint); }
+.seg .on { background: var(--red); color: #fff; }
+.note { font-size: 10px; color: var(--text-faint); margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>S3 · POST-FLASH in Simple mode — “AFTER CARE”</h1>
+<p>In Simple mode this tab answers one question: did it work? Every expert control stays reachable
+under MORE TOOLS — nothing is deleted, only ranked.</p>
+
+<h2>Current behaviour — nine actions, no ranking</h2>
+<div class="win">
+  <div class="titlebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="t">POST-FLASH</span></div>
+  <div class="body">
+    <span class="lbl cur">TODAY</span>
+    <p style="margin:8px 0 12px">BOOT RECOVERY (TEMP) · FLASH RECOVERY · ENTER SIDELOAD MODE · WIPE DATA ·
+      GUIDED FLOW · TIPS · BATCH QUEUE — a first-timer cannot tell which one they need.</p>
+    <div class="row">
+      <div class="panel" style="flex:1">
+        <div class="sec">IMAGES &amp; PACKAGES</div>
+        <div class="col">
+          <div class="btn b-prim">⚡ FLASH ADDITIONAL IMAGES</div>
+          <div class="btn b-ghost">⟳ REBOOT TO RECOVERY</div>
+          <div class="btn b-ghost">APPLY UPDATE.ZIP (SIDELOAD)</div>
+        </div>
+      </div>
+      <div class="panel" style="flex:1">
+        <div class="sec">FINISH</div>
+        <div class="col">
+          <div class="btn b-ghost">WIPE CACHE</div>
+          <div class="btn b-succ">FINISH &amp; REBOOT</div>
+          <div class="btn b-danger">EMERGENCY ABORT</div>
+        </div>
+      </div>
+      <div class="panel" style="flex:1">
+        <div class="sec">RECOVERY &amp; MIGRATION</div>
+        <div class="col">
+          <div class="btn b-ghost">BOOT RECOVERY (TEMP)</div>
+          <div class="btn b-ghost">FLASH RECOVERY</div>
+          <div class="btn b-danger">⚠ WIPE DATA</div>
+        </div>
+        <div class="note">…then GUIDED FLOW, TIPS, BATCH QUEUE below the fold</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Proposed — Simple mode</h2>
+<div class="win">
+  <div class="titlebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="t">POST-FLASH — Simple</span>
+    <span class="seg" style="margin-left:auto"><span class="on">SIMPLE</span><span>EXPERT</span></span></div>
+  <div class="body">
+    <span class="lbl new">PROPOSED</span>
+    <div class="panel" style="margin-top:8px">
+      <div class="boot">
+        <div class="t">Is the phone booting normally?</div>
+        <div class="d">ROM installed 12 minutes ago · panther · slot A</div>
+      </div>
+      <div class="row" style="flex-wrap:wrap">
+        <div class="btn b-succ">FINISH &amp; REBOOT</div>
+        <div class="btn b-prim">INSTALL ADD-ON ZIP</div>
+        <div class="btn b-ghost">IT WON'T BOOT — HELP</div>
+      </div>
+      <div class="more"><span><b>MORE TOOLS</b> — recovery images · wipe · guided flows · batch queue</span><span>▸</span></div>
+    </div>
+  </div>
+  <div class="capnote"><b>Three actions, ranked by what actually happens next.</b> “It won't boot” opens the
+    triage card (restore boot · boot recovery · retry failed partitions) instead of a log dump.</div>
+</div>
+
+<h2>Proposed — Expert mode</h2>
+<div class="win">
+  <div class="titlebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="t">POST-FLASH — Expert</span>
+    <span class="seg" style="margin-left:auto"><span>SIMPLE</span><span class="on">EXPERT</span></span></div>
+  <div class="body">
+    <span class="lbl new">PROPOSED</span>
+    <p style="margin:8px 0 12px">Every current control stays, and the batch queue is promoted out of the
+      third scroll page into its own panel.</p>
+    <div class="row">
+      <div class="panel" style="flex:1">
+        <div class="sec">RECOVERY</div>
+        <div class="col">
+          <div class="btn b-ghost">BOOT RECOVERY (TEMP)</div>
+          <div class="btn b-ghost">FLASH RECOVERY</div>
+          <div class="btn b-ghost">ENTER SIDELOAD MODE</div>
+          <div class="btn b-danger">⚠ WIPE DATA</div>
+        </div>
+      </div>
+      <div class="panel" style="flex:1">
+        <div class="sec">BATCH QUEUE</div>
+        <div class="col">
+          <div class="btn b-prim">⚡ PROCESS QUEUE</div>
+          <div style="border:1px solid var(--line); border-radius:6px; padding:8px; font-size:10px; color:var(--text-dim)">
+            <div style="display:flex; justify-content:space-between"><span>01 · RR-onyx.zip</span><span class="pill neut">queued</span></div>
+            <div style="display:flex; justify-content:space-between; margin-top:4px"><span>02 · boot.img</span><span class="pill warn">running</span></div>
+            <div style="display:flex; justify-content:space-between; margin-top:4px"><span>03 · magisk.zip</span><span class="pill ok">done</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="capnote"><b>Same data, different ranking.</b> Simple hides the queue behind MORE TOOLS; Expert gives it
+    a panel where it can be seen while it runs.</div>
+</div>
+
+</div>
+</body>
+</html>

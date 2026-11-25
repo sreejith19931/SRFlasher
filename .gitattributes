@@ -1,0 +1,25 @@
+# Normalize line endings: LF in the repository, native on checkout.
+* text=auto
+
+# Windows/VS sources — always text
+*.cs text
+*.csproj text
+*.slnx text
+*.xaml text
+*.config text
+*.manifest text
+*.resx text
+*.settings text
+*.md text
+*.svg text
+*.html text
+*.css text
+*.ps1 text
+
+# Binaries — never touch
+*.exe binary
+*.dll binary
+*.png binary
+*.ico binary
+*.jpg binary
+*.zip binary

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UI samples — index</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+.gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 700px) { .gallery { grid-template-columns: 1fr; } }
+.tile { border: 1px solid var(--line); border-radius: 9px; background: var(--panel);
+        padding: 15px; display: flex; flex-direction: column; }
+.tile .k { font-size: 9px; font-weight: 700; letter-spacing: .08em; color: var(--red-2);
+           margin-bottom: 5px; }
+.tile h3 { font-size: 12.5px; margin: 0 0 5px; }
+.tile p { font-size: 10.5px; margin: 0 0 12px; flex: 1; }
+.tile a { display: inline-block; font-size: 10.5px; font-weight: 700; }
+.tile .why { font-size: 9.5px; color: var(--text-faint); margin-top: 8px;
+             border-top: 1px solid var(--line); padding-top: 8px; }
+.done { border-color: rgba(0,184,148,.35); }
+.done .k { color: var(--green-2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>UI samples</h1>
+<p>Review pages for the proposed layout work. Each opens on its own — shared tokens live in
+<code>theme.css</code>, next to these files. Nothing here is implemented yet except the three fixes
+listed at the bottom.</p>
+
+<div class="gallery">
+
+  <div class="tile">
+    <div class="k">S1</div>
+    <h3>Flash footer — phases instead of fake percent</h3>
+    <p>Four phase chips (CHECKS · WRITE · VERIFY · REBOOT) with an indeterminate shimmer during
+      extraction and reboot waits. The modal overlay stops appearing during flashes.</p>
+    <a href="S1-progress-footer.html">Open sample →</a>
+    <div class="why">Fixes the frozen bar at 18 % and the “did Close cancel it?” ambiguity.</div>
+  </div>
+
+  <div class="tile">
+    <div class="k">S2</div>
+    <h3>Toasts — cross-tab notifications</h3>
+    <p>Success, warning and failure toasts with an action button, stacked above the footer.
+      Failed flashes stay until dismissed.</p>
+    <a href="S2-toasts.html">Open sample →</a>
+    <div class="why">A flash that finishes on another tab is currently invisible.</div>
+  </div>
+
+  <div class="tile">
+    <div class="k">S3</div>
+    <h3>POST-FLASH in Simple mode — “AFTER CARE”</h3>
+    <p>Simple: “Is the phone booting?” plus three ranked actions and a MORE TOOLS expander.
+      Expert: today's controls with the batch queue promoted out of the third scroll page.</p>
+    <a href="S3-after-care.html">Open sample →</a>
+    <div class="why">Nine unranked actions become three, with nothing deleted.</div>
+  </div>
+
+  <div class="tile">
+    <div class="k">S4</div>
+    <h3>Global mode switch in the sidebar</h3>
+    <p>The Simple/Expert control moves under the device card and governs every tab, including the
+      collapsed icon rail.</p>
+    <a href="S4-mode-switch.html">Open sample →</a>
+    <div class="why">Today the checkbox only affects the ROM tab; POST-FLASH ignores it.</div>
+  </div>
+
+  <div class="tile">
+    <div class="k">S5</div>
+    <h3>Narrow window — stacked POST-FLASH</h3>
+    <p>One breakpoint on the content grid: two columns become one below ~720 px of content width,
+      measured against the sidebar state.</p>
+    <a href="S5-narrow-window.html">Open sample →</a>
+    <div class="why">At MinWidth 940 the right column hits its 300 px floor and truncates.</div>
+  </div>
+
+  <div class="tile done">
+    <div class="k">✓ FINAL</div>
+    <h3>Logo mark — S/R monogram</h3>
+    <p>The signed-off mark on its own, vector art at full size. Main logo asset:
+      <code>SRFlasher/Assets/logo-sr.svg</code>, 512 × 512, transparent outside the badge.</p>
+    <a href="logo-final.html">Open the final mark →</a>
+    <div class="why">Shared cap line y=150 / baseline y=366 · the S’s <code>&gt;</code> tip dives under the R’s slash.</div>
+  </div>
+
+  <div class="tile done">
+    <div class="k">✓ APPLIED</div>
+    <h3>Already fixed in the code</h3>
+    <p>Stale “Additional Files tab” strings in four step banners · <code>Ctrl+F</code> now respects
+      <code>FlashEnabled</code> instead of opening the confirm dialog when the gate refuses ·
+      the overlay's “Close” became HIDE with a tooltip saying the operation continues.</p>
+    <a href="../SRFlasher/MainWindow.xaml">MainWindow.xaml →</a>
+    <div class="why">Verified by build; bin\Debug was locked by the running app.</div>
+  </div>
+
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S4 · Global mode switch in the sidebar</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+.shell { display: flex; gap: 0; }
+.side { width: 232px; flex: 0 0 232px; border-right: 1px solid var(--line);
+        background: var(--panel); padding: 14px 12px; }
+.side.narrow { width: 52px; flex: 0 0 52px; padding: 12px 0; align-items: center; }
+.content { flex: 1; padding: 18px 20px; }
+.brand { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+.mark { width: 28px; height: 28px; border-radius: 9px; display: flex; align-items: center;
+        justify-content: center; font-weight: 800; font-size: 14px; color: #fff;
+        background: linear-gradient(135deg,#E0244A,#C41E3F); box-shadow: 0 0 14px rgba(224,36,74,.45); }
+.brand .n { font-size: 12px; font-weight: 700; line-height: 1.2; }
+.brand .v { font-size: 8.5px; color: var(--text-faint); letter-spacing: .06em; }
+.dev { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px;
+       padding: 11px; margin-bottom: 12px; }
+.dev .nm { font-size: 12px; font-weight: 700; }
+.dev .sub { font-size: 9.5px; color: var(--text-dim); margin-bottom: 8px; }
+.kv { display: flex; justify-content: space-between; align-items: center; font-size: 9.5px; padding: 3px 0; }
+.kv .k { color: var(--text-faint); font-weight: 700; letter-spacing: .05em; }
+.lblrow { font-size: 9px; color: var(--text-faint); font-weight: 700;
+          letter-spacing: .07em; margin: 12px 0 5px; }
+.segfull { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+           font-size: 9.5px; font-weight: 700; }
+.segfull span { flex: 1; text-align: center; padding: 6px 0; color: var(--text-faint); }
+.segfull .on { background: var(--red); color: #fff; }
+.hint { font-size: 9px; color: var(--text-faint); margin-top: 5px; line-height: 1.35; }
+.railbtn { width: 32px; height: 30px; border-radius: 8px; background: var(--panel-2);
+           border: 1px solid var(--line); display: flex; align-items: center;
+           justify-content: center; font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.railbtn.act { border-color: var(--red); color: var(--red-2); }
+.tabbar { display: flex; gap: 18px; border-bottom: 1px solid var(--line);
+          margin-bottom: 16px; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; }
+.tabbar div { padding: 8px 0; color: var(--text-faint); border-bottom: 2px solid transparent; }
+.tabbar .on { color: var(--red-2); border-bottom-color: var(--red); }
+.ph { font-size: 11.5px; font-weight: 700; margin-bottom: 6px; }
+.phd { font-size: 10.5px; color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>S4 · Global mode switch in the sidebar</h1>
+<p>The switch moves from the ROM tab header into the sidebar, under the device card. Simple/Expert
+then governs every tab — POST-FLASH stops being a wall of recovery controls in Simple mode.
+The <code>ExpertMode</code> setting already persists, so this is a move and a widening, not new state.</p>
+
+<h2>Current — the checkbox lives inside one tab</h2>
+<div class="win">
+  <div class="titlebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="t">Today</span></div>
+  <div class="shell">
+    <div class="side">
+      <div class="brand"><div class="mark">R</div><div><div class="n">SR FLASHER</div><div class="v">FLASH CONSOLE · v2.0</div></div></div>
+      <div class="dev">
+        <div class="nm">Pixel 7 · panther</div><div class="sub">304018ed</div>
+        <div class="kv"><span class="k">BOOTLOADER</span><span class="pill ok">UNLOCKED</span></div>
+        <div class="kv"><span class="k">BATTERY</span><span class="pill warn">34 %</span></div>
+      </div>
+      <div class="lblrow">TOOLS</div>
+      <div class="btn b-ghost" style="width:100%">Theme: Dark</div>
+    </div>
+    <div class="content">
+      <div class="tabbar"><div class="on">ROM</div><div>POST-FLASH</div><div>LOGS</div></div>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start">
+        <div><div class="ph">FLASH ROM</div><div class="phd">Select a package, choose what to write, then flash.</div></div>
+        <div class="chip on">☑ EXPERT MODE</div>
+      </div>
+      <p style="margin-top:12px; font-size:10.5px">…and the POST-FLASH tab still shows every recovery control,
+        because the switch only exists here.</p>
+    </div>
+  </div>
+</div>
+
+<h2>Proposed — switcher in the sidebar, governing all tabs</h2>
+<div class="win">
+  <div class="titlebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="t">Proposed</span></div>
+  <div class="shell">
+    <div class="side">
+      <div class="brand"><div class="mark">R</div><div><div class="n">SR FLASHER</div><div class="v">FLASH CONSOLE · v2.0</div></div></div>
+      <div class="dev">
+        <div class="nm">Pixel 7 · panther</div><div class="sub">304018ed · fastboot</div>
+        <div class="kv"><span class="k">BOOTLOADER</span><span class="pill ok">UNLOCKED</span></div>
+        <div class="kv"><span class="k">BATTERY</span><span class="pill warn">34 %</span></div>
+        <div class="kv"><span class="k">SLOT</span><span class="pill neut">A</span></div>
+      </div>
+      <div class="lblrow">INTERFACE MODE</div>
+      <div class="segfull"><span class="on">SIMPLE</span><span>EXPERT</span></div>
+      <div class="hint">Applies to every tab · your choice is remembered</div>
+      <div class="lblrow">TOOLS</div>
+      <div class="btn b-ghost" style="width:100%">Theme: Dark</div>
+    </div>
+    <div class="content">
+      <div class="tabbar"><div class="on">ROM</div><div>POST-FLASH</div><div>LOGS</div></div>
+      <div class="ph">FLASH ROM <span class="pill neut" style="margin-left:6px">SIMPLE</span></div>
+      <div class="phd">Pick a package — the app states exactly what it will write.</div>
+      <div style="margin-top:12px; display:flex; gap:7px; flex-wrap:wrap">
+        <div class="chip">Install a custom ROM</div>
+        <div class="chip on">Change the kernel</div>
+        <div class="chip">Add-ons &amp; recovery</div>
+      </div>
+    </div>
+  </div>
+  <div class="capnote"><b>Collapsed to the icon rail</b>, the switch becomes two 32×30 glyph buttons
+    (S / E) with the active one outlined in crimson — the rail keeps working without a label.</div>
+</div>
+
+<h2>Collapsed rail — where the switch goes</h2>
+<div class="win"><div class="body" style="padding:14px">
+  <div style="display:flex; gap:16px; align-items:flex-start">
+    <div class="side narrow" style="border:1px solid var(--line); border-radius:8px">
+      <div class="railbtn">◀</div>
+      <div class="railbtn">🌙</div>
+      <div class="railbtn act">S</div>
+      <div class="railbtn">E</div>
+      <div class="railbtn">📁</div>
+    </div>
+    <div style="font-size:10.5px; color:var(--text-dim); padding-top:4px">
+      Top-to-bottom: expand · theme · <b style="color:var(--red-2)">Simple</b> · Expert · log file.<br>
+      The active mode stays outlined so the rail never hides which contract is in force.
+    </div>
+  </div>
+</div></div>
+
+</div>
+</body>
+</html>

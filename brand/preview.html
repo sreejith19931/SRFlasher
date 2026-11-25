@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flasher — logo sizes</title>
+<style>
+  :root { --line: #2c3240; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0e1014; color: #dfe5ea;
+         font-family: "Segoe UI", system-ui, sans-serif; font-size: 13px; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 26px 20px 46px; }
+  h1 { font-size: 18px; margin: 0 0 4px; font-weight: 600; }
+  p.h { color: #8a93a5; font-size: 12px; margin: 0 0 8px; }
+  h2 { font-size: 10.5px; text-transform: uppercase; letter-spacing: .1em;
+       color: #77808f; font-weight: 700; margin: 28px 0 10px; }
+
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 700px) { .pair { grid-template-columns: 1fr; } }
+  .plate { border-radius: 12px; display: flex; align-items: center; justify-content: center;
+           padding: 26px 18px; border: 1px solid var(--line); min-height: 250px; }
+  .plate.dark  { background: radial-gradient(circle at 50% 30%, rgba(220,20,60,.14), transparent 65%), #12151c; }
+  .plate.light { background: #f4f5f7; border-color: #dde1e6; }
+  .plate img { width: 210px; height: auto; display: block; }
+
+  .row { display: flex; align-items: flex-end; gap: 26px; flex-wrap: wrap;
+         background: #12151c; border: 1px solid var(--line); border-radius: 12px; padding: 20px 18px; }
+  .row .c { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .row .c span { font-size: 9px; color: #77808f; letter-spacing: .06em; }
+
+  .card { background: #12151c; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .card img { width: 100%; display: block; border-radius: 6px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 6px; }
+  th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid #1d2430; }
+  th { color: #77808f; font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; }
+  td.k { color: #b9c2d0; font-family: Consolas, monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Flasher — logo sizes</h1>
+  <p class="h">Mark above, <b>FLASHER</b> wordmark below, on the same 512 grid as the app mark:
+    badge 16–496, wordmark 400 wide, cap height 63.8, 44 px below the badge. The SR is scaled 1.22
+    about its own centre, so it sits ~33 px from the badge sides instead of 86.</p>
+
+  <div class="pair">
+    <div class="plate dark"><img src="flasher/png/flasher-logo-on-dark-512.png" alt="Flasher lockup, light wordmark for dark backgrounds"></div>
+    <div class="plate light"><img src="flasher/png/flasher-logo-on-light-512.png" alt="Flasher lockup, dark wordmark for light backgrounds"></div>
+  </div>
+
+  <h2>Lockup at size</h2>
+  <div class="row">
+    <div class="c"><img src="flasher/png/flasher-logo-on-dark-256.png" width="256" alt="256"><span>256</span></div>
+    <div class="c"><img src="flasher/png/flasher-logo-on-dark-128.png" width="128" alt="128"><span>128</span></div>
+  </div>
+
+  <h2>BACKUP variant</h2>
+  <p class="h">Same mark and same type size as the lockup above (cap height 63.8, 44 px below the badge);
+    the shorter word sets 366 wide instead of 400. Files live in <code>backup/</code> and <code>backup/png/</code>.</p>
+  <div class="pair">
+    <div class="plate dark"><img src="backup/png/flasher-logo-backup-on-dark-512.png" alt="Backup lockup, light wordmark for dark backgrounds"></div>
+    <div class="plate light"><img src="backup/png/flasher-logo-backup-on-light-512.png" alt="Backup lockup, dark wordmark for light backgrounds"></div>
+  </div>
+  <div class="row">
+    <div class="c"><img src="backup/png/flasher-logo-backup-on-dark-256.png" width="256" alt="256"><span>256</span></div>
+    <div class="c"><img src="backup/png/flasher-logo-backup-on-light-128.png" width="128" alt="128"><span>128</span></div>
+  </div>
+
+  <h2>Icon only — app, favicon and tile sizes</h2>
+  <p class="h">The mark carries no wordmark at icon sizes; this set is shared by both variants.</p>
+  <div class="row">
+    <div class="c"><img src="icon/flasher-icon-256.png" width="128" alt="256"><span>256</span></div>
+    <div class="c"><img src="icon/flasher-icon-192.png" width="96" alt="192"><span>192</span></div>
+    <div class="c"><img src="icon/flasher-icon-180.png" width="90" alt="180"><span>180</span></div>
+    <div class="c"><img src="icon/flasher-icon-64.png" width="64" alt="64"><span>64</span></div>
+    <div class="c"><img src="icon/flasher-icon-48.png" width="48" alt="48"><span>48</span></div>
+    <div class="c"><img src="icon/flasher-icon-32.png" width="32" alt="32"><span>32</span></div>
+    <div class="c"><img src="icon/flasher-icon-16.png" width="16" alt="16"><span>16</span></div>
+  </div>
+
+  <h2>Link preview cards — 1200 × 630</h2>
+  <div class="pair">
+    <div class="card"><img src="flasher/png/flasher-social-1200x630.png" alt="Flasher social card"></div>
+    <div class="card"><img src="backup/png/flasher-backup-social-1200x630.png" alt="Backup social card"></div>
+  </div>
+
+  <h2>What to use where</h2>
+  <table>
+    <tr><th>File</th><th>Use</th></tr>
+    <tr><td class="k">flasher/png/flasher-logo-on-dark-1024/512/256.png</td><td>Hero and header logos on dark sites, README banners</td></tr>
+    <tr><td class="k">flasher/png/flasher-logo-on-light-1024/512/256.png</td><td>Same, on white or light-grey pages and docs</td></tr>
+    <tr><td class="k">flasher/png/flasher-logo-on-dark-128.png</td><td>Sidebar / nav lockup, footer</td></tr>
+    <tr><td class="k">backup/png/flasher-logo-backup-on-dark-1024/512/256.png</td><td>Backup-build lockup, same grid</td></tr>
+    <tr><td class="k">backup/png/flasher-logo-backup-on-light-1024/512/256.png</td><td>Backup-build lockup on light pages and docs</td></tr>
+    <tr><td class="k">backup/png/flasher-backup-social-1200x630.png</td><td>Open Graph / Twitter card image for the backup variant</td></tr>
+    <tr><td class="k">backup/png/flasher-backup-icon.ico</td><td>favicon for a backup build — the wordmark-free mark, same frames as flasher-icon.ico</td></tr>
+    <tr><td class="k">icon/flasher-icon-512.png</td><td>Android adaptive icon, PWA splash, store listings</td></tr>
+    <tr><td class="k">icon/flasher-icon-192.png</td><td>Android home screen, PWA manifest 192</td></tr>
+    <tr><td class="k">icon/flasher-icon-180.png</td><td>Apple touch icon</td></tr>
+    <tr><td class="k">icon/flasher-icon-64.png</td><td>Windows taskbar, browser bookmark bar (hi-dpi)</td></tr>
+    <tr><td class="k">icon/flasher-icon-48.png</td><td>Windows shortcut / start menu</td></tr>
+    <tr><td class="k">icon/flasher-icon-32.png</td><td>favicon.png, tab icon</td></tr>
+    <tr><td class="k">icon/flasher-icon-16.png</td><td>Favicon, notification tray</td></tr>
+    <tr><td class="k">flasher-icon.ico</td><td>favicon.ico — 16/24/32/48/64/128/256 in one file</td></tr>
+    <tr><td class="k">flasher-social-1200x630.png</td><td>Open Graph / Twitter card image</td></tr>
+  </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
+  <Settings>
+    <Setting Name="Theme" Type="System.String" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)">Auto</Value>
+    </Setting>
+    <Setting Name="RecentFiles" Type="System.String" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="RecentAdditional" Type="System.String" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="BatteryThreshold" Type="System.Int32" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)">30</Value>
+    </Setting>
+    <Setting Name="LogRetentionDays" Type="System.Int32" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)">30</Value>
+    </Setting>
+    <Setting Name="ReduceMotion" Type="System.Boolean" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="WindowTop" Type="System.Double" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="WindowLeft" Type="System.Double" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="WindowWidth" Type="System.Double" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)">800</Value>
+    </Setting>
+    <Setting Name="WindowHeight" Type="System.Double" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)">700</Value>
+    </Setting>
+    <Setting Name="SelectedPartitions" Type="System.String" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="BatchQueue" Type="System.String" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ExpertMode" Type="System.Boolean" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

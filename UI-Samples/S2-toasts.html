@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S2 · Toasts — cross-tab notifications</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+.stage { position: relative; min-height: 300px; }
+.toasts { position: absolute; right: 16px; bottom: 70px; display: flex;
+          flex-direction: column; gap: 7px; width: 330px; }
+.toast { display: flex; gap: 9px; align-items: center; background: var(--panel);
+         border: 1px solid var(--line); border-left: 3px solid var(--green);
+         border-radius: 8px; padding: 9px 12px; font-size: 10.5px;
+         box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+.toast.warn { border-left-color: var(--amber); }
+.toast.bad  { border-left-color: var(--red); }
+.toast .txt b { display: block; font-size: 11px; color: var(--text); }
+.toast .txt span { color: var(--text-dim); font-size: 10px; }
+.toast .act { margin-left: auto; color: var(--red-2); font-weight: 700;
+              font-size: 9.5px; white-space: nowrap; }
+/* the footer stays visible so the offset rule is obvious */
+.mini-footer { position: absolute; left: 0; right: 0; bottom: 0; height: 54px;
+  border-top: 1px solid var(--line); background: var(--panel);
+  display: flex; align-items: center; padding: 0 18px; gap: 10px; }
+.mini-footer .s { font-size: 10.5px; font-weight: 600; }
+.mini-footer .m { font-size: 9.5px; color: var(--text-dim); margin-left: auto; }
+.mbar { height: 8px; width: 210px; border-radius: 4px; background: var(--bg); overflow: hidden; }
+.mfill { width: 62%; height: 100%; background: linear-gradient(90deg,#E0244A,#C41E3F); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>S2 · Toasts — cross-tab notifications</h1>
+<p>A flash that finishes while you are reading the LOGS tab is currently invisible: the footer
+simply disappears. Toasts are the cross-tab channel — something finished, something needs a decision.
+They stack above the footer rather than overlapping it.</p>
+
+<h2>Proposed</h2>
+<div class="win">
+  <div class="titlebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="t">SR Flasher — three states of the same channel</span></div>
+  <div class="body">
+    <span class="lbl new">PROPOSED</span>
+    <div class="stage">
+      <div class="toasts">
+        <div class="toast">
+          <div class="txt"><b>✓ ROM installed</b><span>through recovery — check it boots</span></div>
+          <div class="act">AFTER-CARE →</div>
+        </div>
+        <div class="toast warn">
+          <div class="txt"><b>⚠ Bootloader locked</b><span>flashing stays refused until it is unlocked</span></div>
+          <div class="act">GUIDE →</div>
+        </div>
+        <div class="toast bad">
+          <div class="txt"><b>✗ Flash failed</b><span>boot write — device disconnected mid-write</span></div>
+          <div class="act">LOGS →</div>
+        </div>
+      </div>
+      <div class="mini-footer">
+        <span class="s">Flashing boot (A) — image 5 of 9</span>
+        <div class="mbar"><div class="mfill"></div></div>
+        <span class="m">02:31 elapsed</span>
+      </div>
+    </div>
+  </div>
+  <div class="capnote"><b>Rules:</b> auto-dismiss after 6 s · the action jumps to the right place ·
+    a failed flash never auto-dismisses · at most three visible, newest at the bottom.</div>
+</div>
+
+<h2>What each toast is wired to</h2>
+<div class="win"><div class="body">
+  <table style="width:100%; border-collapse:collapse; font-size:11.5px">
+    <tr><td style="padding:6px 8px; border-bottom:1px solid var(--line); width:38%"><b>Flash / sideload completes</b></td>
+        <td style="padding:6px 8px; border-bottom:1px solid var(--line); color:var(--text-dim)">action → the POST-FLASH (AFTER CARE) tab</td></tr>
+    <tr><td style="padding:6px 8px; border-bottom:1px solid var(--line)"><b>Flash fails or is cancelled</b></td>
+        <td style="padding:6px 8px; border-bottom:1px solid var(--line); color:var(--text-dim)">action → LOGS, sticky (no auto-dismiss)</td></tr>
+    <tr><td style="padding:6px 8px; border-bottom:1px solid var(--line)"><b>A gate blocks the action</b></td>
+        <td style="padding:6px 8px; border-bottom:1px solid var(--line); color:var(--text-dim)">locked bootloader, <code>unauthorized</code>, package/device mismatch, low battery</td></tr>
+    <tr><td style="padding:6px 8px"><b>Background job finishes</b></td>
+        <td style="padding:6px 8px; color:var(--text-dim)">batch queue item completed / failed</td></tr>
+  </table>
+</div></div>
+
+</div>
+</body>
+</html>

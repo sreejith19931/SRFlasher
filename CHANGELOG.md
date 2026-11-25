@@ -1,0 +1,35 @@
+# Changelog
+
+All notable changes to SR Flasher are documented here.
+The format follows [Keep a Changelog](https://keepachangelog.com/) and the
+project adheres to [Semantic Versioning](https://semver.org/) from v1.0 onward.
+
+## [1.0.0] — 2026-11
+
+First public release.
+
+### Added
+- Payload-package flashing: `payload.bin` extraction via bundled
+  payload-dumper-go, per-partition flash with wipe options and vbmeta
+  disable-verity/verification.
+- A/B device awareness: dual-slot detection, both-slot custom-recovery
+  install and evidence-driven recovery repair with a pre-repair partition
+  backup (kept per device serial under `Documents\SRFlasher`).
+- Guided two-stage ROM install: boot-chain write → reboot to recovery →
+  sideload apply → extras (GAPPS/Magisk) → first boot, with automatic mode
+  chaining and unauthorized-prompt retry.
+- One-press install chains and a whole-session progress contract
+  (60 / 90 / 95 / 100) with the flashing footer visible through reboot
+  stretches.
+- Easy Flow step trail: CONNECT · MODE · FILE · FLASH · EXTRAS · FINISH.
+- DEVICE dashboard: mode, active slot, bootloader state, battery,
+  anti-rollback version, PC backup inventory; brand logo in a mini phone
+  frame.
+- Rescue tools with plain-language guidance and hard-brick honesty
+  (EDL 9008 requires an authorized flasher).
+- LOGS tab: full command output, level filters, copy/diagnostics bundle;
+  adb server cleanup on app exit.
+- SETTINGS: Dark/Light/OLED/Auto themes, reduce-motion toggle, expert mode.
+- 59 regression tests covering naming, routing, staging rules and tool
+  bundling.
+- Release build auto-packages `SRFlasher_v1.0_Portable.zip`.
