@@ -1,4 +1,4 @@
-<Window x:Class="SRFlasher.MainWindow"
+﻿<Window x:Class="SRFlasher.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:utils="clr-namespace:SRFlasher.Utilities"
@@ -826,6 +826,28 @@
                         AutomationProperties.Name="Collapse device panel"
                         ToolTip="Collapse the device panel"/>
 
+                <!-- IDLE FOOTER BAR (D3): thin state line when nothing is
+                     running. Lives INSIDE the sidebar, docked as its bottom
+                     edge (docked before RECENT so it stays lowest) — as a ZIndex overlay in the root grid it used to
+                     cover the recent list's last row. -->
+                <Border x:Name="IdleFooter" DockPanel.Dock="Bottom" Visibility="{Binding IdleFooterVisibility}"
+                        Background="{DynamicResource PanelBackground}"
+                        BorderBrush="{DynamicResource BorderMedium}" BorderThickness="0,1,0,0" Padding="12,7">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center">
+                            <Ellipse Width="8" Height="8" Style="{StaticResource LedDotStyle}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="{Binding IdleFooterLeft, Mode=OneWay}" FontSize="11" FontWeight="Bold"
+                                       Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" Text="{Binding IdleFooterRight, Mode=OneWay}" FontSize="11"
+                                   Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis" ToolTip="{Binding IdleFooterRight, Mode=OneWay}"/>
+                    </Grid>
+                </Border>
                 <!-- Bottom-docked: recent ROMs are never below the fold. The
                      panel carries the sidebar's own background and a separator
                      line so scrolled card content can never visually bleed
@@ -851,6 +873,7 @@
                         </Grid>
                     </StackPanel>
                 </Border>
+
                 <ScrollViewer x:Name="SidebarFull" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="12,8,12,12">
 
@@ -2991,25 +3014,8 @@
                 </Border>
             </Grid>
 
-            <!-- IDLE FOOTER BAR (D3): thin state line when nothing is running -->
-            <Border x:Name="IdleFooter" Grid.Row="0" Panel.ZIndex="50" Visibility="{Binding IdleFooterVisibility}"
-                    VerticalAlignment="Bottom" Background="{DynamicResource PanelBackground}"
-                    BorderBrush="{DynamicResource BorderMedium}" BorderThickness="0,1,0,0" Padding="24,7">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center">
-                        <Ellipse Width="8" Height="8" Style="{StaticResource LedDotStyle}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBlock Text="{Binding IdleFooterLeft, Mode=OneWay}" FontSize="11" FontWeight="Bold"
-                                   Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center"/>
-                    </StackPanel>
-                    <TextBlock Grid.Column="1" Text="{Binding IdleFooterRight, Mode=OneWay}" FontSize="11"
-                               Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Right" VerticalAlignment="Center"
-                               TextTrimming="CharacterEllipsis" ToolTip="{Binding IdleFooterRight, Mode=OneWay}"/>
-            </Grid>
-            </Border>
+            <!-- IDLE FOOTER BAR: moved into the sidebar (docked below RECENT)
+                 so it can no longer overlap it. -->
 
         <!-- ==================== WELCOME PAGE ====================
              The app opens on this full-width view showing only the device
