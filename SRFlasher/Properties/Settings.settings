@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+﻿<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
   <Profiles>
     <Profile Name="(Default)" />
@@ -55,6 +55,14 @@
     <Setting Name="ExpertMode" Type="System.Boolean" Scope="User">
       <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="CheckUpdates" Type="System.Boolean" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="LastUpdateCheck" Type="System.String" Scope="User">
+      <Profile_Pinned_Value>(Default)</Profile_Pinned_Value>
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

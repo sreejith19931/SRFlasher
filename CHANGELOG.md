@@ -4,6 +4,14 @@ All notable changes to SR Flasher are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the
 project adheres to [Semantic Versioning](https://semver.org/) from v1.0 onward.
 
+## [Unreleased]
+
+### Added
+- In-app update checker: queries the GitHub releases API at most once a
+  day (toggleable in Settings) and flags newer versions in the About card
+  with a direct link to the releases page. Manual CHECK NOW always goes
+  online; automatic checks stay silent when offline. No device data is sent.
+
 ## [1.0.0] — 2026-11
 
 First public release.

@@ -2376,15 +2376,41 @@
                             <TextBlock Text="ABOUT" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" Margin="0,18,0,8"/>
                             <Border Background="{DynamicResource PanelBackground}" BorderBrush="{DynamicResource BorderMedium}"
                                     BorderThickness="1" CornerRadius="8" Padding="16,12">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{Binding AboutLogoPath}" Width="40" Height="40" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock Text="SR Flasher" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
-                                        <TextBlock Text="{Binding AppVersionDisplay, StringFormat=Version {0}}" FontSize="11"
-                                                   Foreground="{DynamicResource TextSecondary}"/>
-                                        <TextBlock Text="ADB/fastboot must be on PATH or in the platform-tools folder. Logs live in %APPDATA%\SRFlasher\Logs."
-                                                   FontSize="10" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap" MaxWidth="560" Margin="0,4,0,0"/>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{Binding AboutLogoPath}" Width="40" Height="40" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
+                                            <TextBlock Text="SR Flasher" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                            <TextBlock Text="{Binding AppVersionDisplay, StringFormat=Version {0}}" FontSize="11"
+                                                       Foreground="{DynamicResource TextSecondary}"/>
+                                            <TextBlock Text="ADB/fastboot must be on PATH or in the platform-tools folder. Logs live in %APPDATA%\SRFlasher\Logs."
+                                                       FontSize="10" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap" MaxWidth="560" Margin="0,4,0,0"/>
+                                        </StackPanel>
                                     </StackPanel>
+                                    <!-- Updates: auto-check once a day (toggleable),
+                                         manual CHECK NOW always goes online. -->
+                                    <Border Background="{DynamicResource BorderMedium}" Height="1" Margin="0,12,0,8" Opacity="0.4"/>
+                                    <CheckBox HorizontalContentAlignment="Left" Margin="0,0,0,6"
+                                              Foreground="{DynamicResource TextPrimary}" FontSize="11"
+                                              IsChecked="{Binding CheckUpdates, Mode=TwoWay}"
+                                              ToolTip="Queries the GitHub releases API at most once a day. No device data is sent — it is a plain version check.">
+                                        <CheckBox.Content>
+                                            <TextBlock Text="Check for updates automatically (once a day)"
+                                                       TextWrapping="Wrap"/>
+                                        </CheckBox.Content>
+                                    </CheckBox>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                        <Button x:Name="BtnCheckUpdates" Style="{StaticResource GhostButton}" Height="30" FontSize="11"
+                                                Padding="12,0" Content="CHECK FOR UPDATES"
+                                                Click="BtnCheckUpdates_Click"/>
+                                        <Button x:Name="BtnOpenReleases" Style="{StaticResource GhostButton}" Height="30" FontSize="11"
+                                                Padding="12,0" Margin="8,0,0,0" Content="OPEN RELEASES PAGE"
+                                                Visibility="{Binding UpdateAvailableVisibility}"
+                                                Click="BtnOpenReleases_Click"
+                                                ToolTip="Opens the GitHub releases page where the portable zip is published"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding UpdateStatusText}" FontSize="10.5"
+                                               Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap" Margin="0,8,0,0"/>
                                 </StackPanel>
                             </Border>
 

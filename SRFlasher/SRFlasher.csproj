@@ -102,6 +102,7 @@
     <Compile Include="Services\RecentFilesManager.cs" />
     <Compile Include="Services\RomValidator.cs" />
     <Compile Include="Services\SettingsMigration.cs" />
+    <Compile Include="Services\UpdateChecker.cs" />
     <Compile Include="Services\ThemeManager.cs" />
     <Compile Include="Services\ToolPathResolver.cs" />
     <Compile Include="Services\WindowChrome.cs" />

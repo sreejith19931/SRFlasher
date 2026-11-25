@@ -3742,6 +3742,119 @@ namespace SRFlasher.ViewModels
             }
         }
 
+        // ==================== Update checker (GitHub releases) ====================
+        // Automatic check at most once a day (Settings.CheckUpdates), silent on
+        // failure; the About card on the SETTINGS tab always offers CHECK NOW.
+        // Privacy: the check is a plain GET to api.github.com — no device data,
+        // no serials, no logs ever leave the machine.
+        private string _updateStatusText;
+        private bool _updateAvailable;
+        private string _updateReleaseUrl;
+
+        /// <summary>Auto-check toggle, persisted with the other user settings.</summary>
+        public bool CheckUpdates
+        {
+            get { return Properties.Settings.Default.CheckUpdates; }
+            set
+            {
+                if (Properties.Settings.Default.CheckUpdates == value) return;
+                Properties.Settings.Default.CheckUpdates = value;
+                try { Properties.Settings.Default.Save(); }
+                catch (Exception ex) { _logger.Debug("Failed to save update-check setting: {Message}", ex.Message); }
+                OnPropertyChanged(nameof(CheckUpdates));
+            }
+        }
+
+        public string UpdateStatusText
+        {
+            get { return _updateStatusText; }
+            private set { _updateStatusText = value; OnPropertyChanged(nameof(UpdateStatusText)); }
+        }
+
+        /// <summary>True only when a NEWER release was found — drives the
+        /// OPEN RELEASES PAGE button in the About card.</summary>
+        public bool UpdateAvailable
+        {
+            get { return _updateAvailable; }
+            private set { _updateAvailable = value; OnPropertyChanged(nameof(UpdateAvailable)); OnPropertyChanged(nameof(UpdateAvailableVisibility)); }
+        }
+
+        public Visibility UpdateAvailableVisibility => _updateAvailable ? Visibility.Visible : Visibility.Collapsed;
+
+        /// <summary>
+        /// Run the GitHub release check. Manual runs always go online and
+        /// surface failures in the status line; automatic runs are throttled
+        /// to once per 24 h and stay silent when offline.
+        /// </summary>
+        public async System.Threading.Tasks.Task CheckForUpdatesAsync(bool manual)
+        {
+            if (!manual && !Properties.Settings.Default.CheckUpdates)
+            {
+                UpdateStatusText = "Automatic update checks are off — use CHECK FOR UPDATES to look manually.";
+                return;
+            }
+
+            // Throttle: the automatic check runs at most once a day.
+            if (!manual)
+            {
+                var last = Properties.Settings.Default.LastUpdateCheck;
+                DateTime lastTime;
+                if (DateTime.TryParse(last, out lastTime) &&
+                    (DateTime.Now - lastTime).TotalHours < 24)
+                {
+                    return; // checked recently — nothing to do
+                }
+            }
+
+            UpdateStatusText = "Checking for updates…";
+            var info = await Services.UpdateChecker.FetchLatestAsync(System.Threading.CancellationToken.None).ConfigureAwait(true);
+            if (info == null)
+            {
+                UpdateStatusText = manual
+                    ? "Update check failed — no connection? The releases page is always up to date on GitHub."
+                    : "Update check skipped (offline).";
+                return;
+            }
+
+            try
+            {
+                Properties.Settings.Default.LastUpdateCheck = DateTime.Now.ToString("o");
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex) { _logger.Debug("Failed to save update-check stamp: {Message}", ex.Message); }
+
+            if (Services.UpdateChecker.IsNewerVersion(info.LatestTag, AppVersionDisplay))
+            {
+                _updateReleaseUrl = string.IsNullOrEmpty(info.ReleaseUrl)
+                    ? Services.UpdateChecker.ReleasesUrl : info.ReleaseUrl;
+                UpdateAvailable = true;
+                UpdateStatusText = "Update available: " + info.LatestTag + " — you are running v" + AppVersionDisplay + ".";
+                Log("[Update] New release available: " + info.LatestTag + " — " + _updateReleaseUrl);
+            }
+            else
+            {
+                UpdateAvailable = false;
+                UpdateStatusText = "Up to date — v" + AppVersionDisplay + " is the latest release.";
+            }
+        }
+
+        /// <summary>Open the GitHub releases page in the browser (update row button).</summary>
+        public void OpenReleasesPage()
+        {
+            var url = _updateAvailable && !string.IsNullOrEmpty(_updateReleaseUrl)
+                ? _updateReleaseUrl : Services.UpdateChecker.ReleasesUrl;
+            try
+            {
+                System.Diagnostics.Process.Start(url);
+                Log("[Update] Opened releases page: " + url);
+            }
+            catch (Exception ex)
+            {
+                Log("[Update] Could not open the browser: " + ex.Message + " — the page is at " + url);
+                ShowToast("Info", "Open in browser failed", "The releases page is at github.com/" + Services.UpdateChecker.RepoOwner + "/" + Services.UpdateChecker.RepoName + "/releases");
+            }
+        }
+
         // ==================== 4.4: loose images inside the ROM zip ====================
         // Some packages (factory images, boot-chain zips, some custom ROMs)
         // ship images as loose files beside payload.bin — those are exactly

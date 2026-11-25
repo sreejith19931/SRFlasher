@@ -639,6 +639,10 @@ namespace SRFlasher
 
             _viewModel.StartDeviceMonitoring();
             LoggingService.Instance.Information("Device monitoring started");
+
+            // Fire-and-forget update check: throttled to once a day, silent on
+            // failure (the About card on SETTINGS always offers CHECK NOW).
+            var updateCheck = _viewModel.CheckForUpdatesAsync(manual: false);
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1464,6 +1468,18 @@ namespace SRFlasher
         private void BtnOpenBackupsFolder_Click(object sender, RoutedEventArgs e)
         {
             _viewModel.OpenBackupsFolder();
+        }
+
+        // Update checker: manual check goes online immediately; OPEN RELEASES
+        // PAGE appears only when a newer version was found.
+        private async void BtnCheckUpdates_Click(object sender, RoutedEventArgs e)
+        {
+            await _viewModel.CheckForUpdatesAsync(manual: true);
+        }
+
+        private void BtnOpenReleases_Click(object sender, RoutedEventArgs e)
+        {
+            _viewModel.OpenReleasesPage();
         }
 
         // 3.6: delete all but the newest backup set.

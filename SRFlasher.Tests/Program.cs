@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -37,6 +37,7 @@ namespace SRFlasher.Tests
             ParseBackupStampTests();
             SlotTagTests();
             BundledToolsTests();
+            UpdateVersionTests();
 
             Console.WriteLine();
             Console.WriteLine(_passed + " passed, " + _failed + " failed");
@@ -155,6 +156,35 @@ namespace SRFlasher.Tests
             CheckEqual("AB + unknown slot", "", AdditionalFileRules.SlotTagForBackup(true, "Unknown"));
             CheckEqual("non-AB ignores slot", "", AdditionalFileRules.SlotTagForBackup(false, "a"));
             CheckEqual("null slot", "", AdditionalFileRules.SlotTagForBackup(true, null));
+        }
+
+        private static void UpdateVersionTests()
+        {
+            Console.WriteLine("--- UpdateChecker.IsNewerVersion ---");
+            // A newer release tag must be reported as an update.
+            Check("v1.1 > 1.0.0", SRFlasher.Services.UpdateChecker.IsNewerVersion("v1.1", "1.0.0"));
+            Check("v1.0.1 > 1.0.0", SRFlasher.Services.UpdateChecker.IsNewerVersion("v1.0.1", "1.0.0"));
+            Check("v2.0 > 1.9.9", SRFlasher.Services.UpdateChecker.IsNewerVersion("v2.0", "1.9.9"));
+            Check("v1.10 > 1.9.0 (numeric compare)", SRFlasher.Services.UpdateChecker.IsNewerVersion("v1.10", "1.9.0"));
+            Check("1.1 (no v prefix) > 1.0.0", SRFlasher.Services.UpdateChecker.IsNewerVersion("1.1", "1.0.0"));
+            Check("V1.2 (capital V) > 1.0.0", SRFlasher.Services.UpdateChecker.IsNewerVersion("V1.2", "1.0.0"));
+
+            // Same version, older version, or junk must NEVER be an update.
+            Check("v1.0 == 1.0.0 is not an update", !SRFlasher.Services.UpdateChecker.IsNewerVersion("v1.0", "1.0.0"));
+            Check("v1.0.0 == 1.0.0.0 is not an update", !SRFlasher.Services.UpdateChecker.IsNewerVersion("v1.0.0", "1.0.0.0"));
+            Check("older tag is not an update", !SRFlasher.Services.UpdateChecker.IsNewerVersion("v0.9", "1.0.0"));
+            Check("null tag is not an update", !SRFlasher.Services.UpdateChecker.IsNewerVersion(null, "1.0.0"));
+            Check("empty tag is not an update", !SRFlasher.Services.UpdateChecker.IsNewerVersion("", "1.0.0"));
+            Check("garbage tag is not an update", !SRFlasher.Services.UpdateChecker.IsNewerVersion("not-a-version", "1.0.0"));
+            Check("null current is not an update", !SRFlasher.Services.UpdateChecker.IsNewerVersion("v1.1", null));
+
+            // JSON extraction of the latest-release payload.
+            var json = "{\"url\":\"https://api.github.com/repos/sreejith19931/SRFlasher/releases/123\",\"tag_name\":\"v1.1\",\"html_url\":\"https://github.com/sreejith19931/SRFlasher/releases/tag/v1.1\"}";
+            var info = SRFlasher.Services.UpdateChecker.ParseLatestRelease(json);
+            Check("tag extracted", info != null && info.LatestTag == "v1.1");
+            Check("release url extracted", info != null && info.ReleaseUrl == "https://github.com/sreejith19931/SRFlasher/releases/tag/v1.1");
+            Check("empty json -> null", SRFlasher.Services.UpdateChecker.ParseLatestRelease("") == null);
+            Check("json without tag -> null", SRFlasher.Services.UpdateChecker.ParseLatestRelease("{}") == null);
         }
     }
 }
