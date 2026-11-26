@@ -10,6 +10,8 @@
 
 A fastboot/adb flashing console for **A/B Android devices** — payload installs, custom recovery, guided sideload and rescue tools, wrapped in a focused WPF desktop app.
 
+<p align="center"><a href="https://srflasher.vercel.app"><b>🌐 srflasher.vercel.app</b></a> — screenshots, FAQ and downloads</p>
+
 > ⚠️ **READ FIRST — RISK**
 > Flashing modifies your device's partitions. Unlocking the bootloader **wipes the device**, and a bad flash can **hard-brick** it (sometimes irrecoverably).
 > SR Flasher runs every command locally through adb/fastboot and tells you exactly what it will write before it writes it — but **you** choose what to flash. **No warranties. You accept the risk.**
