@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="SR Flasher — a fastboot/adb flashing console for A/B Android devices. Payload flashing, guided two-stage install, rescue tools. Free & open source.">
+<meta name="theme-color" content="#0d1017">
+<title>SR Flasher — flashing console for A/B Android devices</title>
+<link rel="icon" type="image/png" href="assets/flasher-icon-256.png">
+<link rel="apple-touch-icon" href="assets/flasher-icon-256.png">
+<style>
+:root{
+  --bg:#0d1017; --bg2:#131824; --panel:#161b28; --panel2:#1a2030; --border:#2a3247;
+  --text:#eef1f6; --muted:#9aa4b2; --red:#e0244a; --red-soft:rgba(224,36,74,.14);
+  --green:#00b894; --amber:#e8b341; --blue:#4c8dff; --purple:#9d7cd8;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.6;overflow-x:hidden}
+::selection{background:var(--red);color:#fff}
+img{max-width:100%;display:block}
+a{color:var(--blue);text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+/* scroll progress bar */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--red),#ff7a59);z-index:99;transition:width .1s linear}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(13,16,23,.82);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .3s}
+nav.scrolled{border-bottom-color:var(--border)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:62px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--text);font-weight:700;font-size:15px}
+.brand img{width:32px;height:32px;border-radius:7px}
+.navlinks{display:flex;gap:26px;align-items:center}
+.navlinks a{color:var(--muted);font-size:13.5px;font-weight:600;transition:color .2s}
+.navlinks a:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;font-weight:700;font-size:13.5px;transition:transform .18s,box-shadow .18s,background .18s;cursor:pointer}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 4px 18px rgba(224,36,74,.35)}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(224,36,74,.5)}
+.btn-ghost{border:1px solid var(--border);color:var(--text)}
+.btn-ghost:hover{border-color:var(--muted);transform:translateY(-2px)}
+.btn-nav{padding:8px 16px;font-size:12.5px}
+#menuBtn{display:none;background:none;border:0;color:var(--text);font-size:22px;cursor:pointer;line-height:1}
+
+/* hero */
+.hero{position:relative;padding:150px 0 90px;text-align:center;overflow:hidden}
+.glow{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;pointer-events:none}
+.glow1{width:520px;height:520px;background:rgba(224,36,74,.16);top:-180px;left:-120px;animation:drift 14s ease-in-out infinite alternate}
+.glow2{width:420px;height:420px;background:rgba(76,141,255,.10);top:-100px;right:-140px;animation:drift 18s ease-in-out infinite alternate-reverse}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(60px,40px) scale(1.12)}}
+.hero .logo{width:110px;height:110px;margin:0 auto 26px;border-radius:24px;box-shadow:0 14px 44px rgba(224,36,74,.28);animation:pop .8s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.6) translateY(24px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.kicker{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:1.6px;color:var(--red);border:1px solid rgba(224,36,74,.4);border-radius:999px;padding:5px 14px;margin-bottom:18px;background:var(--red-soft)}
+h1{font-size:clamp(34px,6vw,58px);line-height:1.12;letter-spacing:-.5px}
+h1 .thin{color:var(--muted);font-weight:600}
+.hero p.lead{max-width:640px;margin:20px auto 0;color:var(--muted);font-size:clamp(15px,2vw,18px)}
+.hero .cta{display:flex;gap:14px;justify-content:center;margin-top:32px;flex-wrap:wrap}
+.hero .cta .btn{padding:14px 28px;font-size:15px}
+.version-chip{color:var(--muted);font-size:12.5px;margin-top:16px}
+.version-chip b{color:var(--green)}
+
+/* trail */
+.trail{margin:70px auto 0;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:0;max-width:760px}
+.trail .step{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:72px}
+.trail .dot{width:30px;height:30px;border-radius:50%;border:2.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:var(--muted);transition:all .5s cubic-bezier(.2,1.3,.4,1)}
+.trail .lbl{font-size:10px;font-weight:700;letter-spacing:1.4px;color:var(--muted)}
+.trail .bar{width:44px;height:2.5px;background:var(--border);margin:0 6px 24px;transition:background .5s}
+.trail.on .dot{border-color:var(--red);color:var(--red);box-shadow:0 0 14px rgba(224,36,74,.45)}
+.trail.on .bar{background:linear-gradient(90deg,var(--red),rgba(224,36,74,.35))}
+.trail.on .lbl{color:var(--text)}
+
+/* sections */
+section{padding:84px 0}
+.sec-head{text-align:center;margin-bottom:48px}
+.sec-head h2{font-size:clamp(24px,4vw,34px);letter-spacing:-.3px}
+.sec-head p{color:var(--muted);margin-top:10px;max-width:600px;margin-left:auto;margin-right:auto}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:24px 22px;transition:transform .25s,border-color .25s,box-shadow .25s}
+.card:hover{transform:translateY(-5px);border-color:rgba(224,36,74,.5);box-shadow:0 14px 34px rgba(0,0,0,.4)}
+.card .ico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:14px;background:var(--red-soft)}
+.card h3{font-size:15.5px;margin-bottom:7px}
+.card p{color:var(--muted);font-size:13.5px;line-height:1.55}
+
+/* screenshots */
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.shot{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--panel);transition:transform .3s,box-shadow .3s}
+.shot:hover{transform:scale(1.015);box-shadow:0 18px 50px rgba(0,0,0,.5)}
+.shot img{width:100%}
+.shot figcaption{padding:11px 15px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.shot.wide{grid-column:1/-1}
+
+/* device support */
+.support{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.dev-chip{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 18px;font-size:13.5px}
+.dev-chip .st{color:var(--green);font-weight:700;font-size:11px;letter-spacing:.6px}
+.dev-chip small{color:var(--muted)}
+
+/* honesty */
+.warnbox{background:linear-gradient(135deg,rgba(232,179,65,.09),rgba(224,36,74,.07));border:1px solid rgba(232,179,65,.35);border-radius:var(--radius);padding:26px 28px;max-width:820px;margin:0 auto}
+.warnbox h3{color:var(--amber);font-size:15px;margin-bottom:10px}
+.warnbox li{color:var(--muted);font-size:13.5px;margin:7px 0 0 18px}
+
+/* changelog */
+.log{max-width:720px;margin:0 auto}
+.rel{position:relative;padding:0 0 30px 30px;border-left:2px solid var(--border);margin-left:10px}
+.rel:last-child{border-left-color:transparent}
+.rel::before{content:'';position:absolute;left:-8px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid var(--red)}
+.rel .v{font-weight:800;font-size:15px}
+.rel .date{color:var(--muted);font-size:12px;margin-left:8px}
+.rel ul{margin:10px 0 0 4px}
+.rel li{color:var(--muted);font-size:13.5px;margin-top:5px}
+.rel li b{color:var(--text);font-weight:600}
+
+/* faq */
+.faq{max-width:720px;margin:0 auto}
+.q{border:1px solid var(--border);border-radius:12px;background:var(--panel);margin-bottom:10px;overflow:hidden}
+.q summary{padding:16px 20px;cursor:pointer;font-weight:600;font-size:14px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.q summary::-webkit-details-marker{display:none}
+.q summary::after{content:'+';color:var(--red);font-size:18px;font-weight:700;transition:transform .2s}
+.q[open] summary::after{transform:rotate(45deg)}
+.q .a{padding:0 20px 16px;color:var(--muted);font-size:13.5px}
+
+/* final cta */
+.final{background:linear-gradient(180deg,var(--bg),var(--bg2));text-align:center;padding:90px 0}
+.final h2{font-size:clamp(24px,4.4vw,38px);letter-spacing:-.4px}
+.final p{color:var(--muted);margin:12px auto 30px;max-width:520px}
+
+/* footer */
+footer{border-top:1px solid var(--border);padding:34px 0;color:var(--muted);font-size:12.5px}
+.foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.foot a{color:var(--muted);margin-left:18px}
+.foot a:hover{color:var(--text)}
+.foot .fl{display:flex;align-items:center;gap:8px;color:var(--muted)}
+.foot img{width:20px;height:20px;border-radius:5px}
+
+/* scroll reveal */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.3,1),transform .7s cubic-bezier(.2,.7,.3,1)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}.rv.d5{transition-delay:.4s}
+.rv-l{opacity:0;transform:translateX(-34px);transition:all .7s cubic-bezier(.2,.7,.3,1)}
+.rv-l.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .rv,.rv-l{opacity:1!important;transform:none!important;transition:none!important}
+  .glow{animation:none}
+  *{transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+
+/* mobile */
+@media (max-width:820px){
+  .grid{grid-template-columns:1fr 1fr}
+  .navlinks{position:fixed;inset:62px 0 auto 0;background:rgba(13,16,23,.97);border-bottom:1px solid var(--border);flex-direction:column;padding:18px 22px 22px;gap:16px;display:none}
+  .navlinks.open{display:flex}
+  #menuBtn{display:block}
+}
+@media (max-width:560px){
+  .grid{grid-template-columns:1fr}
+  .shots{grid-template-columns:1fr}
+  section{padding:60px 0}
+  .hero{padding:120px 0 60px}
+  .trail .bar{width:22px}
+  .trail .step{min-width:56px}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav id="nav">
+  <div class="wrap nav">
+    <a class="brand" href="#top"><img src="assets/flasher-icon-256.png" alt="SR Flasher logo">SR Flasher</a>
+    <div class="navlinks" id="navlinks">
+      <a href="#features">Features</a>
+      <a href="#screenshots">Screenshots</a>
+      <a href="#devices">Devices</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-red btn-nav" href="https://github.com/sreejith19931/SRFlasher/releases/latest" target="_blank" rel="noopener">Download</a>
+    </div>
+    <button id="menuBtn" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero" id="top">
+  <div class="glow glow1"></div><div class="glow glow2"></div>
+  <div class="wrap">
+    <img class="logo" src="assets/logo.png" alt="SR Flasher logo">
+    <div class="kicker rv">FREE &amp; OPEN SOURCE · WINDOWS</div>
+    <h1 class="rv d1">Stop typing fastboot commands.<br><span class="thin">Start one-tapping ROMs.</span></h1>
+    <p class="lead rv d2">SR Flasher is a fastboot/adb flashing console for <b>A/B Android devices</b> —
+    payload flashing, guided two-stage installs, rescue tools with a safety net, and
+    every command logged. 100% local, no telemetry.</p>
+    <div class="cta rv d3">
+      <a class="btn btn-red" href="https://github.com/sreejith19931/SRFlasher/releases/latest" target="_blank" rel="noopener">⬇ Download the portable zip</a>
+      <a class="btn btn-ghost" href="https://github.com/sreejith19931/SRFlasher" target="_blank" rel="noopener">★ View on GitHub</a>
+    </div>
+    <div class="version-chip rv d4">Latest release: <b>v1.1</b> · Windows 10/11 · .NET Framework 4.8 · no install, no admin</div>
+
+    <div class="trail rv d5" id="trail">
+      <div class="step"><div class="dot">✓</div><div class="lbl">CONNECT</div></div>
+      <div class="bar"></div>
+      <div class="step"><div class="dot">✓</div><div class="lbl">MODE</div></div>
+      <div class="bar"></div>
+      <div class="step"><div class="dot">✓</div><div class="lbl">FILE</div></div>
+      <div class="bar"></div>
+      <div class="step"><div class="dot">✓</div><div class="lbl">FLASH</div></div>
+      <div class="bar"></div>
+      <div class="step"><div class="dot">✓</div><div class="lbl">EXTRAS</div></div>
+      <div class="bar"></div>
+      <div class="step"><div class="dot">✓</div><div class="lbl">FINISH</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== FEATURES ==================== -->
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head rv"><h2>Everything the command line forgets to tell you</h2>
+    <p>Built for A/B devices, with the honesty of a tool that knows exactly how bad a bad flash can be.</p></div>
+    <div class="grid">
+      <div class="card rv"><div class="ico">🎯</div><h3>THE PLAN, up front</h3><p>Before anything is written, the app states exactly what gets flashed and how your data is treated. You confirm the plan — not a leap of faith.</p></div>
+      <div class="card rv d1"><div class="ico">📦</div><h3>Full payload support</h3><p>OTA <code>payload.bin</code> extracted with bundled payload-dumper-go and flashed per-partition, with clean/dirty flash choice and vbmeta disable-verity.</p></div>
+      <div class="card rv d2"><div class="ico">🔀</div><h3>A/B aware</h3><p>Dual-slot detection, custom recovery written to both slots, active-slot awareness, and pre-repair partition backups kept on your PC.</p></div>
+      <div class="card rv"><div class="ico">🚀</div><h3>Guided two-stage install</h3><p>Boot chain → recovery → the ROM installs itself via sideload → extras (GAPPS/Magisk) → first boot. Reboots are chained automatically.</p></div>
+      <div class="card rv d1"><div class="ico">🛡</div><h3>Hard-brick guards</h3><p>Anti-rollback consent, both-slot fallback warnings, locked-bootloader refusal, low-battery gate. The app argues with you before it lets you hurt the phone.</p></div>
+      <div class="card rv d2"><div class="ico">🗣</div><h3>Plain-language failures</h3><p>Fastboot/adb errors translated into human. Disabled buttons state exactly why. A low-battery popup at flash time, not a surprise.</p></div>
+      <div class="card rv"><div class="ico">🛠</div><h3>Rescue tools</h3><p>FRP erase, metadata wipe, misc erase, slot switch, fastbootd — each with an honest description and the EDL 9008 reality stated plainly.</p></div>
+      <div class="card rv d1"><div class="ico">📜</div><h3>Full command logs</h3><p>Every adb/fastboot call recorded, level filters, copy and diagnostics bundle. adb server cleaned up on exit.</p></div>
+      <div class="card rv d2"><div class="ico">🌗</div><h3>Dark · Light · OLED · Auto</h3><p>Four themes, reduce-motion toggle, expert mode when you need the raw edges. The app animates, but never fights Windows' motion settings.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SCREENSHOTS ==================== -->
+<section id="screenshots" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="sec-head rv"><h2>See it before you trust it</h2>
+    <p>Real screenshots from a real flash session — POCO F7 (onyx), unlocked, OrangeFox on both slots.</p></div>
+    <div class="shots">
+      <figure class="shot wide rv"><img loading="lazy" src="assets/rom-tab.png" alt="ROM tab — the plan, drop zone and step trail"><figcaption>ROM tab — THE PLAN, the drop zone, and the six-stage Easy Flow trail</figcaption></figure>
+      <figure class="shot rv"><img loading="lazy" src="assets/device-tab.png" alt="Device dashboard and rescue tools"><figcaption>DEVICE — live state, A/B slot, battery, and the rescue toolkit</figcaption></figure>
+      <figure class="shot rv d1"><img loading="lazy" src="assets/logs-tab.png" alt="Command log with filters"><figcaption>LOGS — every command recorded, filterable and copyable</figcaption></figure>
+      <figure class="shot rv"><img loading="lazy" src="assets/additional-tab.png" alt="Additional files tab"><figcaption>ADDITIONAL FILES — recovery sideloads, root managers, extras</figcaption></figure>
+      <figure class="shot rv d1"><img loading="lazy" src="assets/settings-tab.png" alt="Settings"><figcaption>SETTINGS — themes, battery gate, expert mode, update checks</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== DEVICES ==================== -->
+<section id="devices">
+  <div class="wrap">
+    <div class="sec-head rv"><h2>Device support</h2>
+    <p>SR Flasher is built and verified on real hardware. Community reports extend this list.</p></div>
+    <div class="support rv">
+      <div class="dev-chip">📱 <b>POCO F7</b> <small>(onyx)</small> <span class="st">VERIFIED</span></div>
+      <div class="dev-chip">📱 <b>Other A/B devices</b> <small>(payload OTA + fastboot)</small> <span class="st">SHOULD WORK</span></div>
+    </div>
+    <p class="rv" style="text-align:center;color:var(--muted);font-size:13px;margin-top:18px">
+    Verified means a real device was flashed and restored with it. Have another A/B phone?
+    Open an issue with your result — the list grows from reports, not guesses.</p>
+  </div>
+</section>
+
+<!-- ==================== HONESTY ==================== -->
+<section style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="warnbox rv">
+      <h3>⚠️ Real talk — read this once</h3>
+      <ul>
+        <li><b>Unlocking the bootloader wipes your device.</b> Everything — apps, photos, data.</li>
+        <li>A wrong or interrupted flash <b>can hard-brick the phone</b>, with no software fix.</li>
+        <li>SR Flasher shows exactly what it writes before it writes it — but <b>you choose what to flash</b>.</li>
+        <li>Flashing is at your own risk. The app accepts no responsibility for hardware damage.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CHANGELOG ==================== -->
+<section id="changelog">
+  <div class="wrap">
+    <div class="sec-head rv"><h2>Changelog</h2><p>Every release, honestly labelled.</p></div>
+    <div class="log">
+      <div class="rel rv"><span class="v">v1.1</span><span class="date">Nov 2026</span>
+        <ul>
+          <li><b>Update checker</b> — daily GitHub release check (toggleable), links straight to the release</li>
+          <li><b>Anti-rollback consent</b> — asks before flashing on devices with an active anti version</li>
+          <li><b>Both-slot guard</b> — warns when writing the boot chain to both A/B slots</li>
+          <li>DEVICE dashboard populates on tab open; sidebar status bar no longer covers the RECENT list</li>
+        </ul>
+      </div>
+      <div class="rel rv"><span class="v">v1.0</span><span class="date">Nov 2026</span>
+        <ul>
+          <li><b>First public release</b> — payload flashing, A/B recovery install, guided two-stage ROM install, sideload flow, rescue tools, full command logs, Dark/Light/OLED/Auto themes</li>
+          <li>Portable: adb, fastboot and payload-dumper-go bundled. 59 regression tests</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FAQ ==================== -->
+<section id="faq" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="sec-head rv"><h2>Questions people actually ask</h2></div>
+    <div class="faq">
+      <details class="q rv"><summary>Is it really free? Where's the catch?</summary><div class="a">MIT-licensed open source, forever. No accounts, no ads, no telemetry, no "pro" tier. The bundled tools (adb, fastboot, payload-dumper-go) are Apache/BSD licensed and credited in THIRD-PARTY-NOTICES.md.</div></details>
+      <details class="q rv"><summary>Why does Windows / my antivirus show a warning?</summary><div class="a">The exe is unsigned (code-signing certificates cost money a free tool doesn't have yet). SmartScreen shows "unknown publisher" until enough installs build reputation. The code is fully open — build it yourself if you prefer.</div></details>
+      <details class="q rv"><summary>Does it work on my phone?</summary><div class="a">It's built for A/B (seamless-updates) devices with an unlocked bootloader. POCO F7 (onyx) is verified end-to-end. Other A/B devices follow the same flow — report your result and it gets added to the list.</div></details>
+      <details class="q rv"><summary>Can it recover a hard-bricked phone?</summary><div class="a">No — and it says so instead of pretending. Qualcomm EDL (9008) requires an authorized flasher with credentials. What it CAN do: prevent you getting there, back up recovery before repair, and switch slots on a device stuck on a bad slot.</div></details>
+      <details class="q rv"><summary>Does it collect anything?</summary><div class="a">No telemetry, no accounts. The only network call is an optional daily check of the public GitHub releases API — and it sends nothing but a plain request.</div></details>
+      <details class="q rv"><summary>Can I break the app by wrong settings?</summary><div class="a">The guided route is the safe one. Expert mode exposes per-partition selection and vbmeta verity options — labeled "keep OFF unless you know exactly why you need it".</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FINAL CTA ==================== -->
+<section class="final">
+  <div class="wrap">
+    <h2 class="rv">Ready when you are.</h2>
+    <p class="rv d1">Unzip anywhere. adb and fastboot are bundled. Run it, connect your phone, and let the plan convince you first.</p>
+    <div class="cta rv d2" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="btn btn-red" style="padding:14px 30px;font-size:15px" href="https://github.com/sreejith19931/SRFlasher/releases/latest" target="_blank" rel="noopener">⬇ Download v1.1 — free</a>
+      <a class="btn btn-ghost" style="padding:14px 30px;font-size:15px" href="https://github.com/sreejith19931/SRFlasher/issues" target="_blank" rel="noopener">Report a bug / request a feature</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span class="fl"><img src="assets/flasher-icon-256.png" alt="">© 2026 SR — SR Flasher is open source under the <a href="https://github.com/sreejith19931/SRFlasher/blob/main/LICENSE" target="_blank" rel="noopener">MIT license</a></span>
+    <span>
+      <a href="https://github.com/sreejith19931/SRFlasher" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/sreejith19931/SRFlasher/releases" target="_blank" rel="noopener">Releases</a>
+      <a href="https://github.com/sreejith19931/SRFlasher/blob/main/THIRD-PARTY-NOTICES.md" target="_blank" rel="noopener">Notices</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // scroll progress + nav border
+  var bar = document.getElementById('progress'), nav = document.getElementById('nav');
+  function onScroll(){
+    var h = document.documentElement;
+    var p = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    bar.style.width = (p*100) + '%';
+    nav.classList.toggle('scrolled', h.scrollTop > 12);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  // mobile menu
+  var mb = document.getElementById('menuBtn'), nl = document.getElementById('navlinks');
+  mb.addEventListener('click', function(){ nl.classList.toggle('open'); });
+  nl.addEventListener('click', function(e){ if(e.target.tagName==='A') nl.classList.remove('open'); });
+
+  // scroll reveal
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.rv,.rv-l').forEach(function(el){ io.observe(el); });
+
+  // trail lights up when hero passes mid-viewport
+  var trail = document.getElementById('trail');
+  var tio = new IntersectionObserver(function(es){
+    es.forEach(function(en){ if(en.isIntersecting){ trail.classList.add('on'); tio.unobserve(trail); } });
+  }, {threshold:.5});
+  tio.observe(trail);
+})();
+</script>
+</body>
+</html>
