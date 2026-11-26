@@ -28,7 +28,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -245,7 +245,7 @@
     </ItemGroup>
     <Copy SourceFiles="@(SourceLogos)" DestinationFolder="$(StagingFolder)Logos\" />
     <Message Importance="High" Text="[Release Engine] Zipping package containers into standalone Release target..." />
-    <ZipDirectory SourceDirectory="$(StagingFolder)" DestinationFile="$(ZipDestinationDir)SRFlasher_v1.0_Portable.zip" Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(StagingFolder)" DestinationFile="$(ZipDestinationDir)SRFlasher_v1.1_Portable.zip" Overwrite="true" />
     <RemoveDir Directories="$(StagingFolder)" />
     <Message Importance="High" Text="[Release Engine] PORTABLE RELEASE GENERATED SUCCESSFULLY!" />
   </Target>

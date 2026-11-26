@@ -4,7 +4,7 @@ All notable changes to SR Flasher are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the
 project adheres to [Semantic Versioning](https://semver.org/) from v1.0 onward.
 
-## [Unreleased]
+## [1.1.0] — 2026-11-25
 
 ### Added
 - In-app update checker: queries the GitHub releases API at most once a
@@ -19,6 +19,11 @@ project adheres to [Semantic Versioning](https://semver.org/) from v1.0 onward.
 - Both-slot boot-chain guard: flashing boot/init_boot/vendor_boot/dtbo to
   BOTH slots warns that the fallback slot is being removed and offers the
   safer active-slot switch.
+- Sidebar: the idle status bar now docks below the RECENT panel instead of
+  overlaying its last row.
+- DEVICE dashboard: populates when the tab is opened (was: once at startup,
+  which left it empty until a manual refresh), and the refresh button's
+  enabled state/reason no longer go stale after connect/disconnect.
 
 ## [1.0.0] — 2026-11
 

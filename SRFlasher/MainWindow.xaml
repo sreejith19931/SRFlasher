@@ -885,7 +885,7 @@
                                    AutomationProperties.Name="SR Flasher logo"/>
                             <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
                                 <TextBlock Style="{StaticResource TextHeading}" Text="SR FLASHER"/>
-                                <TextBlock Style="{StaticResource TextCaption}" Text="FLASH CONSOLE · v1.0"
+                                <TextBlock Style="{StaticResource TextCaption}" Text="FLASH CONSOLE · v1.1"
                                            TextTrimming="CharacterEllipsis"/>
                             </StackPanel>
                         </StackPanel>
